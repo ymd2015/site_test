@@ -16,6 +16,38 @@ docs/
 
 記事を追加したら `mkdocs.yml` の `nav:` セクションにも追記するとナビゲーションに表示されます。
 
+## 画像・添付ファイルの置き場所
+
+画像は **`docs/assets/images/`** に、PDFなどの添付ファイルは **`docs/assets/files/`** に置いてください。
+
+```
+docs/
+├── assets/
+│   ├── images/
+│   │   └── screenshot.png
+│   └── files/
+│       └── manual.pdf
+├── index.md
+└── your-category/
+    └── your-page.md
+```
+
+記事からは **相対パス** で参照します。相対パスにしておくと、GitHub.com 上でMarkdownを直接開いたときも、デプロイ済みの静的サイト上でも、どちらでも画像が正しく表示されます。
+
+```markdown
+<!-- docs/index.md から参照する例 -->
+![スクリーンショット](assets/images/screenshot.png)
+
+<!-- docs/your-category/your-page.md から参照する例 -->
+![スクリーンショット](../assets/images/screenshot.png)
+
+<!-- PDFへのリンク -->
+[マニュアルを開く](../assets/files/manual.pdf)
+```
+
+> **ポイント**: 参照元のMarkdownファイルからの相対パスで指定してください。
+> サブフォルダ内のファイルから `docs/assets/` を参照する場合は `../assets/` となります。
+
 ### タグの使い方
 
 記事のFrontmatterに `tags:` を追記すると、タグが付与されます。
