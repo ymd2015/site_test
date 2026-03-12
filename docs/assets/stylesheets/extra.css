@@ -1,10 +1,105 @@
 /* カスタムスタイルをここに追加 */
 
-/* 今日の日記ボタン（タブバー内） */
-.diary-tab-item .md-tabs__link {
-  opacity: 0.75;
+/* ===== Speed Dial FAB ===== */
+.diary-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.diary-tab-item .md-tabs__link:hover {
+/* メインボタン */
+.diary-fab__main {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.diary-fab__main svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+}
+
+.diary-fab__main:hover {
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.4);
+}
+
+.diary-fab--open .diary-fab__main {
+  transform: rotate(45deg);
+}
+
+/* サブアクション群 */
+.diary-fab__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.diary-fab--open .diary-fab__actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* サブアクションボタン */
+.diary-fab__action {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--md-default-bg-color);
+  color: var(--md-default-fg-color);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: box-shadow 0.2s;
+}
+
+.diary-fab__action:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+/* ツールチップ（左側に表示） */
+.diary-fab__action::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: calc(100% + 0.75rem);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  padding: 0.25rem 0.625rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.diary-fab__action:hover::after {
   opacity: 1;
 }
