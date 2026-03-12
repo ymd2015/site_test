@@ -5,4 +5,7 @@
   {% if config.repo_url %}
   <script>document.documentElement.dataset.repoUrl = {{ config.repo_url | tojson }};</script>
   {% endif %}
+  {% if config.site_url %}
+  <script>document.documentElement.dataset.siteUrl = {{ config.site_url | tojson }};</script>
+  {% endif %}
 {% endblock %}

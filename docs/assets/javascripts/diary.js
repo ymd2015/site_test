@@ -1,6 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
   var repoUrl = document.documentElement.dataset.repoUrl;
 
+  // --- サイトベースURL の検出 ---
+  var siteUrl = document.documentElement.dataset.siteUrl || "";
+  if (!siteUrl) {
+    // canonical リンクと編集URLから推定
+    var canonical = document.querySelector("link[rel=canonical]");
+    var editBtnForBase = document.querySelector("a.md-content__button");
+    if (canonical && editBtnForBase) {
+      var bm = editBtnForBase.href.match(/\/edit\/main\/docs\/(.+\.md)$/);
+      if (bm) {
+        var docsPage = bm[1].replace(/\.md$/, "/");
+        var canonHref = canonical.href;
+        if (canonHref.endsWith(docsPage)) {
+          siteUrl = canonHref.slice(0, canonHref.length - docsPage.length);
+        } else if (docsPage === "index/") {
+          siteUrl = canonHref.replace(/\/?$/, "/");
+        }
+      }
+    }
+    if (!siteUrl) siteUrl = window.location.origin + "/";
+  }
+  if (!siteUrl.endsWith("/")) siteUrl += "/";
   // 今日の日記 URL
   var now = new Date();
   var year = now.getFullYear();
@@ -58,8 +79,10 @@ document.addEventListener("DOMContentLoaded", function () {
   modal.innerHTML =
     '<div class="diary-modal__box" role="dialog" aria-modal="true" aria-label="\u30D1\u30B9\u3092\u6307\u5B9A\u3057\u3066\u7DE8\u96C6">' +
     '<p class="diary-modal__label">\u7DE8\u96C6\u3059\u308B\u30D5\u30A1\u30A4\u30EB\u306E\u30D1\u30B9</p>' +
-    '<input id="diary-modal-input" class="diary-modal__input" type="text" ' +
-    'placeholder="2024/01/01" autocomplete="off" spellcheck="false" />' +
+    '<input id="diary-modal-input" class="diary-modal__input" type="text"' +
+    ' list="diary-modal-datalist"' +
+    ' placeholder="2024/01/01" autocomplete="off" spellcheck="false" />' +
+    '<datalist id="diary-modal-datalist"></datalist>' +
     '<p class="diary-modal__hint">docs/ \u4EE5\u4E0B\u306E\u30D1\u30B9\uff08.md \u4E0D\u8981\uff09</p>' +
     '<div class="diary-modal__btns">' +
     '<button class="diary-modal__cancel">\u30AD\u30E3\u30F3\u30BB\u30EB</button>' +
@@ -68,9 +91,30 @@ document.addEventListener("DOMContentLoaded", function () {
     '</div>';
   document.body.appendChild(modal);
 
+  var navPathsLoaded = false;
+  function loadNavPaths() {
+    if (navPathsLoaded) return;
+    navPathsLoaded = true;
+    var datalist = document.getElementById("diary-modal-datalist");
+    var seen = {};
+    document.querySelectorAll(".md-nav__link[href]").forEach(function (a) {
+      var href = a.href;
+      if (!href || href.indexOf("#") !== -1) return;
+      if (!href.startsWith(siteUrl)) return;
+      var path = href.slice(siteUrl.length).replace(/\/$/, "");
+      if (path && !seen[path]) {
+        seen[path] = true;
+        var opt = document.createElement("option");
+        opt.value = path;
+        datalist.appendChild(opt);
+      }
+    });
+  }
+
   function openModal() {
     modal.setAttribute("aria-hidden", "false");
     modal.classList.add("diary-modal--open");
+    loadNavPaths();
     var input = modal.querySelector("#diary-modal-input");
     input.value = "";
     setTimeout(function () { input.focus(); }, 50);
