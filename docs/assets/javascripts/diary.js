@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
     '<p class="diary-modal__label">\u7DE8\u96C6\u3059\u308B\u30D5\u30A1\u30A4\u30EB\u306E\u30D1\u30B9</p>' +
     '<input id="diary-modal-input" class="diary-modal__input" type="text"' +
     ' list="diary-modal-datalist"' +
-    ' placeholder="2024/01/01" autocomplete="off" spellcheck="false" />' +
+    ' placeholder="path/to/file" autocomplete="off" spellcheck="false" />' +
     '<datalist id="diary-modal-datalist"></datalist>' +
     '<p class="diary-modal__hint">docs/ \u4EE5\u4E0B\u306E\u30D1\u30B9\uff08.md \u4E0D\u8981\uff09</p>' +
     '<div class="diary-modal__btns">' +
