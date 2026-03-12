@@ -22,14 +22,33 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!siteUrl) siteUrl = window.location.origin + "/";
   }
   if (!siteUrl.endsWith("/")) siteUrl += "/";
-  // 今日の日記 URL
+  // 今日の日記 docs 相対パス
   var now = new Date();
   var year = now.getFullYear();
   var month = String(now.getMonth() + 1).padStart(2, "0");
   var day = String(now.getDate()).padStart(2, "0");
-  var diaryUrl = repoUrl
-    ? repoUrl.replace(/\/$/, "") + "/edit/main/docs/" + year + "/" + month + "/" + day + ".md"
-    : "#";
+  var diaryDocPath = year + "/" + month + "/" + day + ".md";
+
+  // Pages の HEAD チェックで edit/new を自動判別して開く
+  function openGitHubEdit(docPath, onBefore, onAfter) {
+    if (!repoUrl) { if (onAfter) onAfter(); return; }
+    var pageUrl = siteUrl + docPath.replace(/\.md$/i, "") + "/";
+    if (onBefore) onBefore();
+    fetch(pageUrl, { method: "HEAD" })
+      .then(function (res) {
+        var target = res.ok
+          ? repoUrl.replace(/\/$/, "") + "/edit/main/docs/" + docPath
+          : repoUrl.replace(/\/$/, "") + "/new/main?filename=docs/" + docPath;
+        window.open(target, "_blank", "noopener,noreferrer");
+      })
+      .catch(function () {
+        var target = repoUrl.replace(/\/$/, "") + "/new/main?filename=docs/" + docPath;
+        window.open(target, "_blank", "noopener,noreferrer");
+      })
+      .finally(function () {
+        if (onAfter) onAfter();
+      });
+  }
 
   // このページを編集 URL（MkDocs Material が生成した編集ボタンから取得）
   var editBtn = document.querySelector("a.md-content__button");
@@ -41,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
   fab.className = "diary-fab";
 
   var actions = [
-    { url: diaryUrl, icon: "\uD83D\uDDD3\uFE0F", label: "\u4ECA\u65E5\u306E\u65E5\u8A18\u3092\u66F8\u304F" },
+    { url: "#", icon: "\uD83D\uDDD3\uFE0F", label: "\u4ECA\u65E5\u306E\u65E5\u8A18\u3092\u66F8\u304F", id: "diary-fab-diary" },
   ];
   if (editUrl) {
     actions.push({ url: editUrl, icon: "\uD83D\uDCDD", label: "\u3053\u306E\u30DA\u30FC\u30B8\u3092\u7DE8\u96C6" });
@@ -72,7 +91,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.body.appendChild(fab);
 
-  // ===== \u30d1\u30b9\u6307\u5b9a\u30e2\u30fc\u30c0\u30eb =====
+  // 今日の日記ボタン
+  document.getElementById("diary-fab-diary").addEventListener("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    fab.classList.remove("diary-fab--open");
+    openGitHubEdit(diaryDocPath);
+  });
+
+  // ===== パス指定モーダル =====
   var modal = document.createElement("div");
   modal.className = "diary-modal";
   modal.setAttribute("aria-hidden", "true");
@@ -132,32 +159,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!path) return;
     if (!/\.md$/i.test(path)) path += ".md"; // .md を自動付与
     if (!repoUrl) { closeModal(); return; }
-
-    // Pages 上の URL を構築（.md を除去してトレイリングスラッシュを付ける）
-    var pagePath = path.replace(/\.md$/i, "") + "/";
-    var pageUrl = window.location.origin +
-      window.location.pathname.replace(/\/[^\/]*$/, "/") + pagePath;
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = "\u78BA\u8A8D\u4E2D\u2026";
-
-    fetch(pageUrl, { method: "HEAD" })
-      .then(function (res) {
-        var target = res.ok
-          ? repoUrl.replace(/\/$/, "") + "/edit/main/docs/" + path
-          : repoUrl.replace(/\/$/, "") + "/new/main?filename=docs/" + path;
-        window.open(target, "_blank", "noopener,noreferrer");
-      })
-      .catch(function () {
-        // ネットワークエラーなどの場合は新規作成側にフォールバック
-        var target = repoUrl.replace(/\/$/, "") + "/new/main?filename=docs/" + path;
-        window.open(target, "_blank", "noopener,noreferrer");
-      })
-      .finally(function () {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "\u7DE8\u96C6\u3092\u958B\u304F";
-        closeModal();
-      });
+    openGitHubEdit(
+      path,
+      function () { submitBtn.disabled = true; submitBtn.textContent = "\u78BA\u8A8D\u4E2D\u2026"; },
+      function () { submitBtn.disabled = false; submitBtn.textContent = "\u7DE8\u96C6\u3092\u958B\u304F"; closeModal(); }
+    );
   }
 
   document.getElementById("diary-fab-path").addEventListener("click", function (e) {
