@@ -39,6 +39,16 @@ tags:
 
 `main` ブランチへの push が検知されると、GitHub Actions が自動的にサイトをビルド・公開します。
 
+## GitHub Pages の初期設定
+
+リポジトリを作成後、**一度だけ**以下の設定が必要です。
+
+1. リポジトリの **Settings** を開く
+2. 左メニューの **Pages** を選択
+3. **Build and deployment → Source** を `GitHub Actions` に変更して保存
+
+以降は `main` への push で自動的に公開・更新されます。
+
 ## GitHub Actions について
 
 本リポジトリのCIは **GitHub hosted runner** (`ubuntu-latest`) を使用します。  
