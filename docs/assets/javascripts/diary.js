@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var year = now.getFullYear();
   var month = String(now.getMonth() + 1).padStart(2, "0");
   var day = String(now.getDate()).padStart(2, "0");
-  var diaryDocPath = year + "/" + month + "/" + day + ".md";
+  var diaryDocPath = "diary/" + year + "/" + month + "/" + day + ".md";
 
   // Pages の HEAD チェックで edit/new を自動判別して開く
   function openGitHubEdit(docPath, onBefore, onAfter) {
@@ -59,13 +59,12 @@ document.addEventListener("DOMContentLoaded", function () {
   var fab = document.createElement("div");
   fab.className = "diary-fab";
 
-  var actions = [
-    { url: "#", icon: "\uD83D\uDDD3\uFE0F", label: "\u4ECA\u65E5\u306E\u65E5\u8A18\u3092\u66F8\u304F", id: "diary-fab-diary" },
-  ];
+  var actions = [];
   if (editUrl) {
     actions.push({ url: editUrl, icon: "\uD83D\uDCDD", label: "\u3053\u306E\u30DA\u30FC\u30B8\u3092\u7DE8\u96C6" });
   }
-  // \u30d1\u30b9\u6307\u5b9a\u30dc\u30bf\u30f3\uff08modal \u30c8\u30ea\u30ac\u30fc\uff0cid \u3067\u5f8c\u304b\u3089\u30a4\u30d9\u30f3\u30c8\u8ffd\u52a0\uff09
+  actions.push({ url: "#", icon: "\uD83D\uDDD3\uFE0F", label: "\u4ECA\u65E5\u306E\u65E5\u8A18\u3092\u66F8\u304F", id: "diary-fab-diary" });
+  // パス指定ボタン（modal トリガー、id で後からイベント追加）
   actions.push({ url: "#", icon: "\uD83D\uDCC2", label: "\u30D1\u30B9\u3092\u6307\u5B9A\u3057\u3066\u7DE8\u96C6", id: "diary-fab-path" });
 
   var actionsHtml = actions.map(function (item) {
