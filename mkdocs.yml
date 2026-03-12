@@ -9,6 +9,7 @@ edit_uri: edit/main/docs/
 theme:
   name: material
   language: ja
+  custom_dir: overrides
   features:
     - navigation.tabs
     - navigation.sections
@@ -35,6 +36,12 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/<your-org>/<your-repo>
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra_javascript:
+  - assets/javascripts/diary.js
 
 markdown_extensions:
   - admonition

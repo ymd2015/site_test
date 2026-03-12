@@ -1,1 +1,10 @@
 /* カスタムスタイルをここに追加 */
+
+/* 今日の日記ボタン（タブバー内） */
+.diary-tab-item .md-tabs__link {
+  opacity: 0.75;
+}
+
+.diary-tab-item .md-tabs__link:hover {
+  opacity: 1;
+}
