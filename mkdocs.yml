@@ -27,6 +27,8 @@ theme:
 plugins:
   - search:
       lang: ja
+  - tags:
+      tags_file: tags.md
 
 extra:
   social:
@@ -42,4 +44,5 @@ markdown_extensions:
 
 nav:
   - ホーム: index.md
+  - タグ一覧: tags.md
   # カテゴリ構造が決まったらここに追加
