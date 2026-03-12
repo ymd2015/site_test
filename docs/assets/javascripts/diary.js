@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", function () {
     '<div class="diary-modal__box" role="dialog" aria-modal="true" aria-label="\u30D1\u30B9\u3092\u6307\u5B9A\u3057\u3066\u7DE8\u96C6">' +
     '<p class="diary-modal__label">\u7DE8\u96C6\u3059\u308B\u30D5\u30A1\u30A4\u30EB\u306E\u30D1\u30B9</p>' +
     '<input id="diary-modal-input" class="diary-modal__input" type="text" ' +
-    'placeholder="2024/01/01.md" autocomplete="off" spellcheck="false" />' +
-    '<p class="diary-modal__hint">docs/ \u4EE5\u4E0B\u306E\u76F8\u5BFE\u30D1\u30B9\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044</p>' +
+    'placeholder="2024/01/01" autocomplete="off" spellcheck="false" />' +
+    '<p class="diary-modal__hint">docs/ \u4EE5\u4E0B\u306E\u30D1\u30B9\uff08.md \u4E0D\u8981\uff09</p>' +
     '<div class="diary-modal__btns">' +
     '<button class="diary-modal__cancel">\u30AD\u30E3\u30F3\u30BB\u30EB</button>' +
     '<button class="diary-modal__submit">\u7DE8\u96C6\u3092\u958B\u304F</button>' +
@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var submitBtn = modal.querySelector(".diary-modal__submit");
     var path = input.value.trim().replace(/^\//, "");
     if (!path) return;
+    if (!/\.md$/i.test(path)) path += ".md"; // .md を自動付与
     if (!repoUrl) { closeModal(); return; }
 
     // Pages 上の URL を構築（.md を除去してトレイリングスラッシュを付ける）
