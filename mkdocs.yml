@@ -49,8 +49,3 @@ markdown_extensions:
       permalink: true
   - pymdownx.highlight
   - pymdownx.superfences
-
-nav:
-  - ホーム: index.md
-  - タグ一覧: tags.md
-  # カテゴリ構造が決まったらここに追加
