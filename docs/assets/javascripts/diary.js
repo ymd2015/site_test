@@ -191,6 +191,85 @@ document.addEventListener("DOMContentLoaded", function () {
     fab.classList.toggle("diary-fab--open");
   });
 
+  // ===== 日記カレンダー =====
+  var calendarState = { year: 0, month: 0, dates: {} };
+
+  function renderCalendar(root, diaryDates, year, month) {
+    var now2 = new Date();
+    if (!year)  year  = now2.getFullYear();
+    if (!month) month = now2.getMonth() + 1;
+    calendarState = { year: year, month: month, dates: diaryDates };
+    var monthStr  = String(month).padStart(2, "0");
+    var dayNames  = ["月", "火", "水", "木", "金", "土", "日"];
+    var firstDow  = (new Date(year, month - 1, 1).getDay() + 6) % 7; // Mon=0
+    var daysInMonth = new Date(year, month, 0).getDate();
+
+    var html = '<div class="diary-cal">';
+    html += '<div class="diary-cal__header">'
+          + '<button class="diary-cal__nav" id="diary-cal-prev" aria-label="前の月">&#9664;</button>'
+          + '<span class="diary-cal__title">' + year + '年' + month + '月</span>'
+          + '<button class="diary-cal__nav" id="diary-cal-next" aria-label="次の月">&#9654;</button>'
+          + '</div>';
+    html += '<div class="diary-cal__grid">';
+    dayNames.forEach(function (d, i) {
+      var cls = "diary-cal__dow" + (i === 5 ? " diary-cal__dow--sat" : i === 6 ? " diary-cal__dow--sun" : "");
+      html += '<div class="' + cls + '">' + d + '</div>';
+    });
+    for (var e = 0; e < firstDow; e++) {
+      html += '<div class="diary-cal__cell diary-cal__cell--empty"></div>';
+    }
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dayStr = String(d).padStart(2, "0");
+      var key = year + "/" + monthStr + "/" + dayStr;
+      var url = diaryDates[key];
+      var dow = new Date(year, month - 1, d).getDay();
+      var isToday = year === now2.getFullYear() && month === now2.getMonth() + 1 && d === now2.getDate();
+      var cls = "diary-cal__cell"
+        + (url     ? " diary-cal__cell--has-entry" : "")
+        + (isToday ? " diary-cal__cell--today"     : "")
+        + (dow === 6 ? " diary-cal__cell--sat" : "")
+        + (dow === 0 ? " diary-cal__cell--sun" : "");
+      html += url
+        ? '<a href="' + url + '" class="' + cls + '">' + d + '</a>'
+        : '<div class="'  + cls + '">' + d + '</div>';
+    }
+    html += '</div></div>';
+    root.innerHTML = html;
+
+    document.getElementById("diary-cal-prev").addEventListener("click", function () {
+      var y = calendarState.year, m = calendarState.month - 1;
+      if (m < 1)  { m = 12; y--; }
+      renderCalendar(root, calendarState.dates, y, m);
+    });
+    document.getElementById("diary-cal-next").addEventListener("click", function () {
+      var y = calendarState.year, m = calendarState.month + 1;
+      if (m > 12) { m = 1;  y++; }
+      renderCalendar(root, calendarState.dates, y, m);
+    });
+  }
+
+  function initDiaryCalendar() {
+    var root = document.getElementById("diary-calendar-root");
+    if (!root) return;
+    root.innerHTML = '<p class="diary-cal__loading">読み込み中…</p>';
+    fetch(siteUrl + "sitemap.xml")
+      .then(function (r) { return r.text(); })
+      .then(function (text) {
+        var xml = new DOMParser().parseFromString(text, "text/xml");
+        var diaryDates = {};
+        xml.querySelectorAll("loc").forEach(function (loc) {
+          var m = loc.textContent.trim().match(/\/diary\/(\d{4})\/(\d{2})\/(\d{2})\//);
+          if (m) diaryDates[m[1] + "/" + m[2] + "/" + m[3]] = loc.textContent.trim();
+        });
+        renderCalendar(root, diaryDates);
+      })
+      .catch(function () {
+        root.innerHTML = '<p>カレンダーの読み込みに失敗しました。</p>';
+      });
+  }
+
+  initDiaryCalendar();
+
   document.addEventListener("click", function () {
     fab.classList.remove("diary-fab--open");
   });

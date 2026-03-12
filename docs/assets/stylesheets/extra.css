@@ -187,3 +187,95 @@
 .diary-modal__submit:hover {
   opacity: 0.88;
 }
+
+/* ===== 日記カレンダー ===== */
+.diary-cal {
+  max-width: 21rem;
+  user-select: none;
+}
+
+.diary-cal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.diary-cal__title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.diary-cal__nav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--md-default-fg-color--light);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.diary-cal__nav:hover {
+  color: var(--md-primary-fg-color);
+  background: var(--md-default-fg-color--lightest);
+}
+
+.diary-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  text-align: center;
+}
+
+.diary-cal__dow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--md-default-fg-color--light);
+  padding: 0.2rem 0 0.4rem;
+}
+
+.diary-cal__dow--sat { color: #2196f3; }
+.diary-cal__dow--sun { color: #e53935; }
+
+.diary-cal__cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.82rem;
+  color: var(--md-default-fg-color--light);
+  text-decoration: none;
+}
+
+.diary-cal__cell--empty { pointer-events: none; }
+
+.diary-cal__cell--sat { color: #2196f3; }
+.diary-cal__cell--sun { color: #e53935; }
+
+.diary-cal__cell--today {
+  outline: 2px solid var(--md-primary-fg-color);
+  outline-offset: -2px;
+  color: var(--md-primary-fg-color);
+  font-weight: 700;
+}
+
+.diary-cal__cell--has-entry {
+  background: var(--md-primary-fg-color);
+  color: var(--md-primary-bg-color);
+  font-weight: 700;
+}
+
+.diary-cal__cell--has-entry:hover {
+  opacity: 0.82;
+}
+
+.diary-cal__cell--has-entry.diary-cal__cell--today {
+  outline-color: var(--md-primary-bg-color);
+}
+
+.diary-cal__loading {
+  font-size: 0.875rem;
+  color: var(--md-default-fg-color--light);
+}
