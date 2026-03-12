@@ -28,7 +28,6 @@ plugins:
   - search:
       lang: ja
   - tags:
-      tags_file: tags.md
 
 extra:
   social:
