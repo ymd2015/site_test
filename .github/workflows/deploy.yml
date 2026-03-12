@@ -34,6 +34,7 @@ jobs:
       - name: Build MkDocs site
         run: |
           echo "site_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" >> mkdocs.yml
+          echo "repo_url: https://github.com/${{ github.repository }}" >> mkdocs.yml
           mkdocs build --strict
 
       - name: Upload Pages artifact
