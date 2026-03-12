@@ -83,12 +83,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function submitModal() {
     var input = modal.querySelector("#diary-modal-input");
+    var submitBtn = modal.querySelector(".diary-modal__submit");
     var path = input.value.trim().replace(/^\//, "");
     if (!path) return;
     if (!repoUrl) { closeModal(); return; }
-    var target = repoUrl.replace(/\/$/, "") + "/edit/main/docs/" + path;
-    window.open(target, "_blank", "noopener,noreferrer");
-    closeModal();
+
+    // Pages 上の URL を構築（.md を除去してトレイリングスラッシュを付ける）
+    var pagePath = path.replace(/\.md$/i, "") + "/";
+    var pageUrl = window.location.origin +
+      window.location.pathname.replace(/\/[^\/]*$/, "/") + pagePath;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "\u78BA\u8A8D\u4E2D\u2026";
+
+    fetch(pageUrl, { method: "HEAD" })
+      .then(function (res) {
+        var target = res.ok
+          ? repoUrl.replace(/\/$/, "") + "/edit/main/docs/" + path
+          : repoUrl.replace(/\/$/, "") + "/new/main?filename=docs/" + path;
+        window.open(target, "_blank", "noopener,noreferrer");
+      })
+      .catch(function () {
+        // ネットワークエラーなどの場合は新規作成側にフォールバック
+        var target = repoUrl.replace(/\/$/, "") + "/new/main?filename=docs/" + path;
+        window.open(target, "_blank", "noopener,noreferrer");
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "\u7DE8\u96C6\u3092\u958B\u304F";
+        closeModal();
+      });
   }
 
   document.getElementById("diary-fab-path").addEventListener("click", function (e) {
