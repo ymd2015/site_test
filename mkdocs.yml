@@ -1,0 +1,45 @@
+site_name: Wiki
+site_description: Wiki powered by MkDocs
+# site_url はデプロイ時にGitHub Actionsが自動設定します
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  language: ja
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.action.edit
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: ダークモードに切替
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: ライトモードに切替
+
+plugins:
+  - search:
+      lang: ja
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/<your-org>/<your-repo>
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - ホーム: index.md
+  # カテゴリ構造が決まったらここに追加

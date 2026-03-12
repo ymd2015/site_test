@@ -1,0 +1,38 @@
+# Wiki Template
+
+MkDocs + GitHub Pages によるWikiテンプレートです。
+
+## Markdownファイルの置き場所
+
+すべての記事は **`docs/` フォルダ配下** に `.md` ファイルとして置いてください。
+
+```
+docs/
+├── index.md          # トップページ（必須）
+├── your-page.md      # 任意の記事
+└── your-category/    # カテゴリを作る場合はフォルダを切る
+    └── your-page.md
+```
+
+記事を追加したら `mkdocs.yml` の `nav:` セクションにも追記するとナビゲーションに表示されます。
+
+## 編集方法
+
+1. GitHub.com 上でファイルを直接編集してコミット
+2. または `git clone` → ローカルで編集 → `git push`
+
+`main` ブランチへの push が検知されると、GitHub Actions が自動的にサイトをビルド・公開します。
+
+## GitHub Actions について
+
+本リポジトリのCIは **GitHub hosted runner** (`ubuntu-latest`) を使用します。  
+セルフホストランナーは使用しないため、別途ランナーの用意は不要です。
+
+## ローカルプレビュー
+
+```bash
+pip install -r requirements.txt
+mkdocs serve
+```
+
+ブラウザで `http://127.0.0.1:8000` を開くとプレビューできます。
